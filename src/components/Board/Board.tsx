@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Cell from "../Cell/Cell"
 import NumberPad from "../NumberPad/NumberPad"
 import type { Puzzle } from "../../data/puzzle"
@@ -44,6 +44,29 @@ function Board({ puzzle }: BoardProps) {
     )
 
     const maxRegionSize = Math.max(...Object.values(regionSizes))
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+          if (!selectedCellId) return
+      
+          if (event.key === "Backspace" || event.key === "Delete") {
+            handleErase()
+            return
+          }
+      
+          const number = Number(event.key)
+      
+          if (number >= 1 && number <= maxRegionSize) {
+            handleNumberSelect(number)
+          }
+        }
+      
+        window.addEventListener("keydown", handleKeyDown)
+      
+        return () => {
+          window.removeEventListener("keydown", handleKeyDown)
+        }
+      }, [selectedCellId, maxRegionSize])
 
     const availableNumbers = Array.from(
         { length: maxRegionSize },
