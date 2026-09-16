@@ -3,12 +3,14 @@ import "./NumberPad.css"
 type NumberPadProps = {
   numbers: number[]
   onNumberSelect: (number: number) => void
+  onErase: () => void
   disabled: boolean
 }
 
 function NumberPad({
   numbers,
   onNumberSelect,
+  onErase,
   disabled,
 }: NumberPadProps) {
   return (
@@ -24,6 +26,14 @@ function NumberPad({
           {number}
         </button>
       ))}
+      <button
+        type="button"
+        onClick={onErase}
+        disabled={disabled}
+        aria-label="Erase value"
+      >
+        Erase
+      </button>
     </div>
   )
 }

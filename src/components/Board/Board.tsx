@@ -19,6 +19,17 @@ function Board({ puzzle }: BoardProps) {
             [selectedCellId]: number,
         }))
     }
+    const handleErase = () => {
+        if (!selectedCellId) return
+      
+        setUserValues((currentValues) => {
+          const updatedValues = { ...currentValues }
+      
+          delete updatedValues[selectedCellId]
+      
+          return updatedValues
+        })
+      }
     const getCell = (row: number, col: number) => {
         return puzzle.cells.find(
             (cell) => cell.row === row && cell.col === col
@@ -81,6 +92,7 @@ function Board({ puzzle }: BoardProps) {
             <NumberPad
                 numbers={availableNumbers}
                 onNumberSelect={handleNumberSelect}
+                onErase={handleErase}
                 disabled={!selectedCellId}
             />
         </div>
