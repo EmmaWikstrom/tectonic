@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
 import NumberPad from "../NumberPad/NumberPad";
 import type { Puzzle } from "../../data/puzzle";
@@ -18,6 +18,26 @@ function Board({ puzzle }: BoardProps) {
   const [boardCheckResult, setBoardCheckResult] = useState<
     "correct" | "incorrect" | null
   >(null);
+  const [completionResult, setCompletionResult] = useState<
+    "solved" | "incorrect" | null
+  >(null);
+  const wasBoardFilled = useRef(false);
+
+  const editableCells = puzzle.cells.filter((cell) => !cell.isGiven);
+  const isBoardFilled = editableCells.every(
+    (cell) => userValues[cell.id] !== undefined,
+  );
+  const isBoardCorrect =
+    isBoardFilled &&
+    editableCells.every((cell) => userValues[cell.id] === cell.solution);
+
+  useEffect(() => {
+    if (!wasBoardFilled.current && isBoardFilled) {
+      setCompletionResult(isBoardCorrect ? "solved" : "incorrect");
+    }
+
+    wasBoardFilled.current = isBoardFilled;
+  }, [isBoardFilled, isBoardCorrect]);
 
   const handleNumberSelect = (number: number) => {
     if (!selectedCellId) return;
