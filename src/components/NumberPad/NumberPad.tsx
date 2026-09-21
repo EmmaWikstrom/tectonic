@@ -1,3 +1,5 @@
+import styles from "./NumberPad.module.scss";
+
 type NumberPadProps = {
   numbers: number[];
   onNumberSelect: (number: number) => void;
@@ -12,7 +14,12 @@ function NumberPad({
   disabled,
 }: NumberPadProps) {
   return (
-    <div className="number-pad">
+    <div
+      className={styles.numberPad}
+      style={{
+        gridTemplateColumns: `repeat(${numbers.length}, minmax(0, 1fr))`,
+      }}
+    >
       {numbers.map((number) => (
         <button
           key={number}
