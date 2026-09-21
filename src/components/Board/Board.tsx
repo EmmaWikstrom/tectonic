@@ -161,11 +161,12 @@ function Board({ puzzle }: BoardProps) {
   );
 
   return (
-    <div>
+    <div className={styles.game}>
       <div
         className={styles.board}
         style={{
-          gridTemplateColumns: `repeat(${puzzle.cols}, 3rem)`,
+          gridTemplateColumns: `repeat(${puzzle.cols}, 1fr)`,
+          gridTemplateRows: `repeat(${puzzle.rows}, 1fr)`,
         }}
       >
         {puzzle.cells.map((cell) => {

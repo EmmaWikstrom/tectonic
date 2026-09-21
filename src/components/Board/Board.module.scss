@@ -1,4 +1,16 @@
+.game {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1rem;
+}
+
 .board {
-    display: grid;
-    width: fit-content;
+  display: grid;
+
+  width: min(100%, 20rem);
+  aspect-ratio: 1;
 }
