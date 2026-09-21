@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Cell from "../Cell/Cell";
 import NumberPad from "../NumberPad/NumberPad";
+import CompletionDialog from "../CompletionDialog/CompletionDialog";
 import type { Puzzle } from "../../data/puzzle";
 import "./Board.css";
 
@@ -63,6 +64,28 @@ function Board({ puzzle }: BoardProps) {
     setCheckedCellId(null);
     setIsCheckedCellCorrect(null);
     setBoardCheckResult(null);
+  };
+
+  const handleCompletionClose = () => {
+    const wasIncorrect = completionResult === "incorrect";
+
+    setCompletionResult(null);
+
+    if (wasIncorrect) {
+      wasBoardFilled.current = false;
+    }
+  };
+
+  const handlePlayAgain = () => {
+    setUserValues({});
+    setSelectedCellId(null);
+
+    setCheckedCellId(null);
+    setIsCheckedCellCorrect(null);
+    setBoardCheckResult(null);
+
+    setCompletionResult(null);
+    wasBoardFilled.current = false;
   };
 
   const handleCheckCell = () => {
@@ -173,6 +196,11 @@ function Board({ puzzle }: BoardProps) {
             />
           );
         })}
+        <CompletionDialog
+          result={completionResult}
+          onClose={handleCompletionClose}
+          onPlayAgain={handlePlayAgain}
+        />
       </div>
       <NumberPad
         numbers={availableNumbers}
