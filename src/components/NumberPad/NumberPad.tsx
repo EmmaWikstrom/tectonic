@@ -1,11 +1,9 @@
-import "./NumberPad.css"
-
 type NumberPadProps = {
-  numbers: number[]
-  onNumberSelect: (number: number) => void
-  onErase: () => void
-  disabled: boolean
-}
+  numbers: number[];
+  onNumberSelect: (number: number) => void;
+  onErase: () => void;
+  disabled: boolean;
+};
 
 function NumberPad({
   numbers,
@@ -35,7 +33,7 @@ function NumberPad({
         Erase
       </button>
     </div>
-  )
+  );
 }
 
-export default NumberPad
+export default NumberPad;

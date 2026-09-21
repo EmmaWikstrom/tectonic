@@ -3,7 +3,7 @@ import Cell from "../Cell/Cell";
 import NumberPad from "../NumberPad/NumberPad";
 import CompletionDialog from "../CompletionDialog/CompletionDialog";
 import type { Puzzle } from "../../data/puzzle";
-import "./Board.css";
+import styles from "./Board.module.scss";
 
 type BoardProps = {
   puzzle: Puzzle;
@@ -163,7 +163,7 @@ function Board({ puzzle }: BoardProps) {
   return (
     <div>
       <div
-        className="board"
+        className={styles.board}
         style={{
           gridTemplateColumns: `repeat(${puzzle.cols}, 3rem)`,
         }}
