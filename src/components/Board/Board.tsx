@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
+
 import Cell from "../Cell/Cell";
 import NumberPad from "../NumberPad/NumberPad";
 import CompletionDialog from "../CompletionDialog/CompletionDialog";
+
 import type { Puzzle } from "../../data/puzzle";
+
 import styles from "./Board.module.scss";
 
 type BoardProps = {
@@ -11,23 +14,31 @@ type BoardProps = {
 
 function Board({ puzzle }: BoardProps) {
   const [selectedCellId, setSelectedCellId] = useState<string | null>(null);
+
   const [userValues, setUserValues] = useState<Record<string, number>>({});
+
   const [checkedCellId, setCheckedCellId] = useState<string | null>(null);
+
   const [isCheckedCellCorrect, setIsCheckedCellCorrect] = useState<
     boolean | null
   >(null);
+
   const [boardCheckResult, setBoardCheckResult] = useState<
     "correct" | "incorrect" | null
   >(null);
+
   const [completionResult, setCompletionResult] = useState<
     "solved" | "incorrect" | null
   >(null);
+
   const wasBoardFilled = useRef(false);
 
   const editableCells = puzzle.cells.filter((cell) => !cell.isGiven);
+
   const isBoardFilled = editableCells.every(
     (cell) => userValues[cell.id] !== undefined,
   );
+
   const isBoardCorrect =
     isBoardFilled &&
     editableCells.every((cell) => userValues[cell.id] === cell.solution);
@@ -47,10 +58,12 @@ function Board({ puzzle }: BoardProps) {
       ...currentValues,
       [selectedCellId]: number,
     }));
+
     setCheckedCellId(null);
     setIsCheckedCellCorrect(null);
     setBoardCheckResult(null);
   };
+
   const handleErase = () => {
     if (!selectedCellId) return;
 
@@ -61,19 +74,10 @@ function Board({ puzzle }: BoardProps) {
 
       return updatedValues;
     });
+
     setCheckedCellId(null);
     setIsCheckedCellCorrect(null);
     setBoardCheckResult(null);
-  };
-
-  const handleCompletionClose = () => {
-    const wasIncorrect = completionResult === "incorrect";
-
-    setCompletionResult(null);
-
-    if (wasIncorrect) {
-      wasBoardFilled.current = false;
-    }
   };
 
   const handlePlayAgain = () => {
@@ -88,6 +92,16 @@ function Board({ puzzle }: BoardProps) {
     wasBoardFilled.current = false;
   };
 
+  const handleCompletionClose = () => {
+    const wasIncorrect = completionResult === "incorrect";
+
+    setCompletionResult(null);
+
+    if (wasIncorrect) {
+      wasBoardFilled.current = false;
+    }
+  };
+
   const handleCheckCell = () => {
     if (!selectedCellId) return;
 
@@ -100,6 +114,8 @@ function Board({ puzzle }: BoardProps) {
     const userValue = userValues[selectedCellId];
 
     if (userValue === undefined) return;
+
+    setBoardCheckResult(null);
 
     setCheckedCellId(selectedCellId);
     setIsCheckedCellCorrect(userValue === selectedCell.solution);
@@ -116,21 +132,31 @@ function Board({ puzzle }: BoardProps) {
       return cell?.solution === userValue;
     });
 
+    setCheckedCellId(null);
+    setIsCheckedCellCorrect(null);
+
     setBoardCheckResult(allCorrect ? "correct" : "incorrect");
   };
 
   const getCell = (row: number, col: number) => {
     return puzzle.cells.find((cell) => cell.row === row && cell.col === col);
   };
+
   const regionSizes = puzzle.cells.reduce<Record<string, number>>(
     (sizes, cell) => {
       sizes[cell.regionId] = (sizes[cell.regionId] ?? 0) + 1;
+
       return sizes;
     },
     {},
   );
 
   const maxRegionSize = Math.max(...Object.values(regionSizes));
+
+  const availableNumbers = Array.from(
+    { length: maxRegionSize },
+    (_, index) => index + 1,
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -155,11 +181,6 @@ function Board({ puzzle }: BoardProps) {
     };
   }, [selectedCellId, maxRegionSize]);
 
-  const availableNumbers = Array.from(
-    { length: maxRegionSize },
-    (_, index) => index + 1,
-  );
-
   return (
     <div className={styles.game}>
       <div
@@ -180,7 +201,6 @@ function Board({ puzzle }: BoardProps) {
             cell.col === 0 || leftNeighbor?.regionId !== cell.regionId;
 
           const hasRightBorder = cell.col === puzzle.cols - 1;
-
           const hasBottomBorder = cell.row === puzzle.rows - 1;
 
           return (
@@ -197,45 +217,56 @@ function Board({ puzzle }: BoardProps) {
             />
           );
         })}
-        <CompletionDialog
-          result={completionResult}
-          onClose={handleCompletionClose}
-          onPlayAgain={handlePlayAgain}
-        />
       </div>
+
       <NumberPad
         numbers={availableNumbers}
         onNumberSelect={handleNumberSelect}
         onErase={handleErase}
         disabled={!selectedCellId}
       />
-      <button
-        type="button"
-        onClick={handleCheckCell}
-        disabled={!selectedCellId || userValues[selectedCellId] === undefined}
-      >
-        Check cell
-      </button>
 
-      {checkedCellId === selectedCellId && isCheckedCellCorrect !== null && (
-        <p role="status">{isCheckedCellCorrect ? "Correct!" : "Incorrect."}</p>
-      )}
+      <div className={styles.actions}>
+        <button
+          type="button"
+          className={styles.actionButton}
+          onClick={handleCheckCell}
+          disabled={!selectedCellId || userValues[selectedCellId] === undefined}
+        >
+          Check cell
+        </button>
 
-      <button
-        type="button"
-        onClick={handleCheckBoard}
-        disabled={Object.keys(userValues).length === 0}
-      >
-        Check board
-      </button>
+        <button
+          type="button"
+          className={styles.actionButton}
+          onClick={handleCheckBoard}
+          disabled={Object.keys(userValues).length === 0}
+        >
+          Check board
+        </button>
+      </div>
 
-      {boardCheckResult !== null && (
-        <p role="status">
-          {boardCheckResult === "correct"
-            ? "No mistakes found so far."
-            : "There is at least one incorrect value."}
-        </p>
-      )}
+      <div className={styles.statusArea}>
+        {checkedCellId === selectedCellId && isCheckedCellCorrect !== null && (
+          <p className={styles.statusMessage} role="status">
+            {isCheckedCellCorrect ? "Correct!" : "Incorrect."}
+          </p>
+        )}
+
+        {boardCheckResult !== null && (
+          <p className={styles.statusMessage} role="status">
+            {boardCheckResult === "correct"
+              ? "No mistakes found so far."
+              : "There is at least one incorrect value."}
+          </p>
+        )}
+      </div>
+
+      <CompletionDialog
+        result={completionResult}
+        onClose={handleCompletionClose}
+        onPlayAgain={handlePlayAgain}
+      />
     </div>
   );
 }

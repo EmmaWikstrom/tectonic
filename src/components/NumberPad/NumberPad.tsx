@@ -33,6 +33,7 @@ function NumberPad({
       ))}
       <button
         type="button"
+        className={`${styles.button} ${styles.erase}`}
         onClick={onErase}
         disabled={disabled}
         aria-label="Erase value"

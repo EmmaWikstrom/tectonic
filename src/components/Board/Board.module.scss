@@ -14,3 +14,61 @@
   width: min(100%, 20rem);
   aspect-ratio: 1;
 }
+
+.actions {
+  width: min(100%, 20rem);
+
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+@media (min-width: 30rem) {
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.actionButton {
+  min-height: 3rem;
+
+  border: 1px solid #999;
+  background: white;
+  color: black;
+
+  padding: 0.75rem 1rem;
+
+  font: inherit;
+  font-size: 1rem;
+
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 3px solid blue;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+}
+
+.statusArea {
+  width: min(100%, 20rem);
+  min-height: 2rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  text-align: center;
+}
+
+.statusMessage {
+  margin: 0;
+
+  font-size: 1rem;
+  line-height: 1.5;
+}
